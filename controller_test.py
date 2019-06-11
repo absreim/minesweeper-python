@@ -1,5 +1,6 @@
 from controller import GameState, Controller
 
+
 def test_victory():
     game = Controller(3,3,2)
     board = game.board
@@ -9,6 +10,7 @@ def test_victory():
             if not cell.is_mine:
                 game.reveal_cell(row_num, col_num)
     assert game.state == GameState.WON
+
 
 def test_defeat():
     game = Controller(5,4,10)

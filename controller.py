@@ -15,6 +15,7 @@ class Cell:
         self.is_mine = False
 
 
+# Game logic controller
 class Controller:
     def __init__(self, width, height, num_mines):
         # Board cell is tuple (is_revealed, is_marked, is_mine)
