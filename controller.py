@@ -28,7 +28,9 @@ class Controller:
             col = index % width
             self.board[row][col].is_mine = True
         self.num_mines = num_mines
+        self.num_empty_cells = width * height - num_mines
         self.num_revealed = 0
+        self.state = GameState.PLAYING
 
     @staticmethod
     def _randomize_mine_locs(num_mines, num_cells):
@@ -45,3 +47,17 @@ class Controller:
             if is_mine_list[i]:
                 mine_locs.append(i)
         return mine_locs
+
+    def toggle_mark(self, row, column):
+        self.board[row][column] = not self.board[row][column]
+
+    def reveal_cell(self, row, column):
+        cell = self.board[row][column]
+        if not cell.is_revealed:
+            self.num_revealed += 1
+            cell.is_revealed = True
+        if self.state == GameState.PLAYING:
+            if cell.is_mine:
+                self.state = GameState.LOST
+            elif self.num_revealed == self.num_empty_cells:
+                self.state = GameState.WON
