@@ -50,7 +50,7 @@ class Controller:
         return mine_locs
 
     def toggle_mark(self, row, column):
-        self.board[row][column] = not self.board[row][column]
+        self.board[row][column].is_marked = not self.board[row][column].is_marked
 
     def reveal_cell(self, row, column):
         cell = self.board[row][column]

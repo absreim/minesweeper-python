@@ -5,9 +5,11 @@ import argparse
 from controller import Controller, GameState
 
 parser = argparse.ArgumentParser()
-parser.add_argument('rows', 'Number of rows in the game board')
-parser.add_argument('cols', 'Number of columns in the game board')
-parser.add_argument('mines', 'Number of mines')
+parser.add_argument('rows', help = 'Number of rows in the game board',
+                    type=int)
+parser.add_argument('cols', help = 'Number of columns in the game board',
+                    type=int)
+parser.add_argument('mines', help = 'Number of mines', type=int)
 args = parser.parse_args()
 
 cols = args.cols
@@ -56,12 +58,35 @@ def print_revealed_board(board):
     print(vertical_border)
 
 
+def print_legend():
+    legend_text = '''
+    * - cell revealed to be mine
+    O - cell revealed to be empty
+    ! - marked cell, not revealed
+    ? - unmarked cell, not revealed
+    '''
+    print(legend_text)
+
+
+def print_help():
+    help_text = '''
+    help - print this help message
+    show - print out the game board and game state
+    legend - print out the legend of game board symbols
+    mark {row} {col} - toggle marking for the cell at the specified row and col
+    reveal {row} {col} - reveal the cell at the specified row and col
+    exit - exit the program
+    '''
+    print(help_text)
+
+
 board = controller.board
 exiting = False
 while not exiting:
     input_line = input('Please enter your command: ')
     tokens = input_line.split(' ')
     if tokens[0] == 'show':
+        print('Showing state of the game board:')
         if controller.state == GameState.PLAYING:
             print('The game is still in progress.')
             print_board(board)
@@ -71,4 +96,23 @@ while not exiting:
         elif controller.state == GameState.WON:
             print('The game is over, you have won.')
             print_revealed_board(board)
-        print('Showing state of the game board:')
+    elif tokens[0] == 'reveal':
+        if len(tokens) >= 3:
+            row = int(tokens[1])
+            col = int(tokens[2])
+            controller.reveal_cell(row, col)
+        else:
+            print('Both row and col must be specified.')
+    elif tokens[0] == 'mark':
+        if len(tokens) >= 3:
+            row = int(tokens[1])
+            col = int(tokens[2])
+            controller.toggle_mark(row, col)
+        else:
+            print('Both row and col must be specified.')
+    elif tokens[0] == 'legend':
+        print_legend()
+    elif tokens[0] == 'exit':
+        exiting = True
+    else:
+        print_help()
