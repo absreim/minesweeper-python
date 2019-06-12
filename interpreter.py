@@ -31,7 +31,7 @@ def print_board(board):
                 if cell.is_mine:
                     row_str_list.append('*')
                 else:
-                    row_str_list.append('O')
+                    row_str_list.append(str(cell.num_adj_mines))
             else:
                 if cell.is_marked:
                     row_str_list.append('!')
@@ -52,7 +52,7 @@ def print_revealed_board(board):
             if cell.is_mine:
                 row_str_list.append('*')
             else:
-                row_str_list.append('O')
+                row_str_list.append('#')
             row_str_list.append('|')
         print(''.join(row_str_list))
     print(vertical_border)
@@ -61,9 +61,11 @@ def print_revealed_board(board):
 def print_legend():
     legend_text = '''
     * - cell revealed to be mine
-    O - cell revealed to be empty
+    # - cell revealed to be empty, at end of game
     ! - marked cell, not revealed
     ? - unmarked cell, not revealed
+    While the game is still in progress, revealed empty cells are displayed
+    with an integer indicating the number of adjacent mines.
     '''
     print(legend_text)
 

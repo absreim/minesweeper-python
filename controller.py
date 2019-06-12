@@ -13,6 +13,7 @@ class Cell:
         self.is_revealed = False
         self.is_marked = False
         self.is_mine = False
+        self.num_adj_mines = None
 
 
 # Game logic controller
@@ -32,6 +33,8 @@ class Controller:
         self.num_empty_cells = width * height - num_mines
         self.num_revealed = 0
         self.state = GameState.PLAYING
+        self.height = height
+        self.width = width
 
     @staticmethod
     def _randomize_mine_locs(num_mines, num_cells):
@@ -52,11 +55,42 @@ class Controller:
     def toggle_mark(self, row, column):
         self.board[row][column].is_marked = not self.board[row][column].is_marked
 
+    def _compute_num_adj_mines(self, row, column):
+        count = 0
+        if row - 1 >= 0:
+            if column - 1 >= 0:
+                if self.board[row - 1][column - 1].is_mine:
+                    count += 1
+            if self.board[row - 1][column].is_mine:
+                count += 1
+            if column + 1 < self.width:
+                if self.board[row - 1][column + 1].is_mine:
+                    count += 1
+        if row + 1 < self.height:
+            if column - 1 >= 0:
+                if self.board[row + 1][column - 1].is_mine:
+                    count += 1
+            if self.board[row - 1][column].is_mine:
+                count += 1
+            if column + 1 < self.width:
+                if self.board[row + 1][column + 1].is_mine:
+                    count += 1
+        if column - 1 >= 0:
+            if self.board[row][column - 1].is_mine:
+                count += 1
+            count += 1
+        if column + 1 < self.width:
+            if self.board[row][column + 1].is_mine:
+                count += 1
+        return count
+
+
     def reveal_cell(self, row, column):
         cell = self.board[row][column]
         if not cell.is_revealed:
             self.num_revealed += 1
             cell.is_revealed = True
+            cell.num_adj_mines = self._compute_num_adj_mines(row, column)
         if self.state == GameState.PLAYING:
             if cell.is_mine:
                 self.state = GameState.LOST
