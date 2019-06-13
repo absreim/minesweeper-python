@@ -1,2 +1,6 @@
 __pycache__
 .pytest_cache
+
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/tasks.xml
